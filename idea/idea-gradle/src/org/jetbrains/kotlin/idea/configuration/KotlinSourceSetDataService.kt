@@ -48,19 +48,23 @@ class KotlinSourceSetDataService : AbstractProjectDataService<GradleSourceSetDat
     override fun getTargetDataKey() = GradleSourceSetData.KEY
 
     private fun getProjectPlatforms(toImport: MutableCollection<DataNode<GradleSourceSetData>>): List<KotlinPlatform> {
-        val platforms = ArrayList<KotlinPlatform>()
+        val platforms = HashSet<KotlinPlatform>()
 
         for (nodeToImport in toImport) {
             nodeToImport.kotlinSourceSet?.also {
                 platforms += it.actualPlatforms.platforms
             }
 
-            if (nodeToImport.parent?.children?.any { it.key.dataType.contains("AndroidModuleModel") } == true) {
+            if (nodeToImport.parent?.children?.any { it.key.dataType.contains("Android") } == true) {
+                platforms += KotlinPlatform.ANDROID
+            }
+
+            if (nodeToImport.data.id.contains("Android")) {
                 platforms += KotlinPlatform.ANDROID
             }
         }
 
-        return platforms.distinct()
+        return platforms.toList()
     }
 
     override fun postProcess(
