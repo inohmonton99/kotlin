@@ -59,9 +59,9 @@ class KotlinSourceSetDataService : AbstractProjectDataService<GradleSourceSetDat
                 platforms += KotlinPlatform.ANDROID
             }
 
-            if (nodeToImport.data.id.contains("Android")) {
-                platforms += KotlinPlatform.ANDROID
-            }
+//            if (nodeToImport.data.id.contains("Android")) {
+//                platforms += KotlinPlatform.ANDROID
+//            }
         }
 
         return platforms.toList()
@@ -119,6 +119,10 @@ class KotlinSourceSetDataService : AbstractProjectDataService<GradleSourceSetDat
             }
 
         private fun relevantPlatformKinds(platform: TargetPlatform, projectPlatforms: List<KotlinPlatform>): Set<SimplePlatform> {
+            if (projectPlatforms.singleOrNull() == KotlinPlatform.COMMON) {
+                return platform.componentPlatforms
+            }
+
             val result = HashSet<SimplePlatform>()
 
             for (simplePlatform in platform.componentPlatforms) {
